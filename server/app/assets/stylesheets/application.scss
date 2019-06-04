@@ -1,0 +1,36 @@
+html, body {
+  height: 100%;
+  position: relative;
+  text-rendering: optimizeLegibility;
+  * {
+    outline: 0;
+  }
+}
+
+html {
+  font-size: 62.5%;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 1.6rem;
+  overflow: hidden auto;
+  max-width: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+}
+
+button, select, html, textarea, input {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+select, button, textarea, input {
+  font-size: 100%;
+}
