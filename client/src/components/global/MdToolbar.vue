@@ -2,14 +2,15 @@
   <div class="md-toolbar md-whiteframe-glow-z1 _md-toolbar-transitions bg-theme-darken">
     <div class="md-toolbar-tools" tabindex="-1">
       <div class="layout-row flex fill-height">
-        <h2 class="md-headline">
+        <h2 class="md-headline md-toolbar-item">
           Introduction
         </h2>
         <span class="flex"></span>
         <div class="md-toolbar-item layout-row">
-          <router-link to="/home" class="md-button">Home</router-link>
-          <router-link to="/about" class="md-button">About</router-link>
-          <router-link to="/boards" class="md-button">Boards</router-link>
+          <router-link to="/home" class="md-button router-button">Home</router-link>
+          <router-link to="/about" class="md-button router-button">About</router-link>
+          <router-link to="/boards" class="md-button router-button">Boards</router-link>
+          <router-link to="/authentication/login" class="md-button router-button">Login</router-link>
         </div>
       </div>
     </div>
@@ -162,6 +163,14 @@ $icon-button-margin-offset: rem(-0.800);
   .md-toolbar-tools {
     height: $md-toolbar-height-mobile-landscape;
     max-height: $md-toolbar-height-mobile-landscape;
+  }
+}
+.router-button {
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    background-color: pink;
   }
 }
 </style>

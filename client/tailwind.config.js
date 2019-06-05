@@ -38,13 +38,11 @@ module.exports = {
         base01: '#fdf6e3',
         base02: '#eee8d5'
       },
-
       hover: {
-        dark: 'rgba(0, 0, 0, 0.1)'
+        dark: 'rgba(0, 0, 0, 0.1)',
+        light: 'rgba(250, 250, 250, 0.1)'
       },
-
       transparent: 'transparent',
-
       black: '#000',
       white: '#fff',
 

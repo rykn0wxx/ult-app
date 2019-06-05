@@ -4,6 +4,19 @@
 
 export default [
   {
+    path: '/authentication',
+    name: 'LayoutsAuthentication',
+    view: 'layouts/Authentication',
+    redirect: '/authentication/login',
+    children: [
+      {
+        path: '/authentication/login',
+        name: 'AuthsLogin',
+        view: 'auths/Login',
+        meta: { public: true }
+      }
+    ]
+  }, {
     path: '/',
     name: 'LayoutsApplication',
     view: 'layouts/Application',

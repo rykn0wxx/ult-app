@@ -1,8 +1,7 @@
 <template>
   <div class="boards-show h-full overflow-auto">
     <div class="flex h-full">
-      <Container
-        class="flex layout-row layout-align-start-start h-full"
+      <container class="flex layout-row layout-align-start-start h-full"
         orientation="horizontal"
         @drop="onColumnDrop($event)"
         drag-handle-selector=".column-drag-handle"
@@ -10,68 +9,47 @@
         drag-class="card-ghost"
         drop-class="card-ghost-drop"
         :drop-placeholder="upperDropPlaceholderOptions">
-        <Draggable
-          v-for="(col, indx) in scene.children"
-          :key="indx">
+        <draggable v-for="(list, indx) in lists.lists" :key="indx">
           <div class="card-container">
-            <div class="card-column-header">
-              <span class="column-drag-handle">&#x2630;</span>
-              {{ col.name }}
+            <div class="card-column-header flex">
+              <span class="column-drag-handle flex-15 text-theme-primary">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve"><g id="Header"> <g> <rect x="-618" y="-2232" fill="none" width="1400" height="3600"/> </g></g><g id="Label"></g><g id="Icon"> <g> <rect fill="none" width="24" height="24"/> <path d="M3,18h18v-2H3V18z M3,13h18v-2H3V13z M3,6v2h18V6H3z"/> </g></g><g id="Grid" display="none"> <g display="inline"> </g></g></svg>
+              </span>
+              <h4 class="md-subhead card-column-header-text">{{ list.list_name }}</h4>
             </div>
-            <Container
-              class="aaaa"
-              group-name="col"
-              @drop="(e) => onCardDrop(col.id, e)"
+            <container group-name="list"
+              @drop="(e) => onCardDrop(list.id, e)"
               @drag-start="(e) => log('drag start', e)"
               @drag-end="(e) => log('drag end', e)"
-              :get-child-payload="getCardPayload(col.id)"
+              :get-child-payload="getCardPayload(list.id)"
               drag-class="card-ghost"
               drop-class="card-ghost-drop"
-              :drop-placeholder="dropPlaceholderOptions"
-            >
-              <Draggable v-for="card in col.children" :key="card.id">
+              :drop-placeholder="dropPlaceholderOptions">
+              <draggable v-for="card in list.cards" :key="card.id">
                 <div class="card">
-                  <p>{{ card.name }}</p>
+                  <p>{{ card.card_content }}</p>
                 </div>
-              </Draggable>
-            </Container>
+              </draggable>
+            </container>
           </div>
-        </Draggable>
-      </Container>
+        </draggable>
+      </container>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import _ from 'lodash'
-
 import { Container, Draggable } from 'vue-smooth-dnd'
-
-function uuid () {
-  return Math.random().toString(16).slice(2)
-}
-
-function applyDrag (arr, dragResult) {
-  const { removedIndex, addedIndex, payload } = dragResult
-  if (removedIndex === null && addedIndex === null) return arr
-
-  const result = [...arr]
-  let itemToAdd = payload
-  if (removedIndex !== null) {
-    itemToAdd = result.splice(removedIndex, 1)[0]
-  }
-  if (addedIndex !== null) {
-    result.splice(addedIndex, 0, itemToAdd)
-  }
-  return result
-}
 
 export default {
   name: 'BoardsShow',
+  components: {
+    Container,
+    Draggable
+  },
   data () {
     return {
-      newColumnName: '',
       upperDropPlaceholderOptions: {
         className: 'cards-drop-preview',
         animationDuration: '150',
@@ -81,132 +59,40 @@ export default {
         className: 'drop-preview',
         animationDuration: '150',
         showOnTop: true
-      },
-      scene: {
-        name: 'workshop',
-        children: [
-          {
-            id: 'column1',
-            name: 'todo',
-            children: [
-              {
-                description: '',
-                name: 'first task',
-                id: uuid(),
-                userAssigned: null
-              },
-              {
-                description: '',
-                name: 'second task',
-                id: uuid(),
-                userAssigned: null
-              },
-              {
-                description: '',
-                name: 'and thrid',
-                id: uuid(),
-                userAssigned: null
-              }
-            ]
-          },
-          {
-            id: 'column2',
-            name: 'in-progress',
-            children: [
-              {
-                description: '',
-                name: 'first task',
-                id: uuid(),
-                userAssigned: null
-              }
-            ]
-          },
-          {
-            id: 'column3',
-            name: 'done',
-            children: [
-              {
-                description: '',
-                name: 'first task',
-                id: uuid(),
-                userAssigned: null
-              }
-            ]
-          }
-        ]
       }
     }
   },
-  components: {
-    Container,
-    Draggable
+  computed: {
+    ...mapGetters('lists', {
+      lists: 'allList'
+    }),
+    list () {
+      return this.lists.lists
+    }
   },
   methods: {
-    ...mapGetters({
-      getLists: 'lists/getLists',
-      getCards: 'cards/getCards'
-    }),
-    getCardsFn () {
-      return this.getCards()
+    getCardPayload (columnId) {
+      console.log('getCardPayload')
     },
-    getListsFn () {
-      return this.getLists()
-    },
-    runMe () {
-      _.forEach(this.boardLists, (v) => {
-        const tmpKeys = _.keys(v)
-        console.log(_.filter(tmpKeys, (vvv) => vvv === 'list_id'))
-      })
-    },
-    createColumn () {
-      console.log('createColumn')
-    },
-    onColumnDrop (e) {
-      const scene = Object.assign({}, this.scene)
-      const meme = applyDrag(scene.children, e)
-      console.log(meme)
-      scene.children = applyDrag(scene.children, e)
-      this.scene = scene
+    onColumnDrop () {
+      console.log('onColumnDrop')
     },
     dragStart () {
       console.log('dragStart')
     },
-    getCardPayload (columnId) {
-      return index => {
-        return this.scene.children.filter(p => p.id === columnId)[0].children[index]
-      }
-    },
     onCardDrop (columnId, dropResult) {
-      if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-        const scene = Object.assign({}, this.scene)
-        const column = scene.children.filter(p => p.id === columnId)[0]
-        const columnIndex = scene.children.indexOf(column)
-
-        const newColumn = Object.assign({}, column)
-        newColumn.children = applyDrag(newColumn.children, dropResult)
-        scene.children.splice(columnIndex, 1, newColumn)
-
-        this.scene = scene
-      }
+      console.log('columnId', columnId)
+      console.log('dropResult', dropResult)
     },
     log (...params) {
       console.log(...params)
-    }
-  },
-  computed: {
-    boardLists: function () {
-      const listsFn = this.getListsFn()
-      return listsFn(this.$route.params.boardId)
-    },
-    listCards: function () {
-      const cardsFn = this.getCardsFn()
-      return cardsFn(this.boardLists)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../../sass/variables";
 @import "../../sass/mixins";
 .boards-show {
   @include prop-to-value(padding, 0, true);
@@ -216,7 +102,14 @@ export default {
   min-width: 272px;
   max-width: 272px;
   width: 272px;
+  &-drag-handle {
+    display: flex;
+    > svg {
+      fill: currentColor;
+    }
+  }
 }
+
 .draggable-item {
   height: 50px;
   line-height: 50px;
@@ -246,18 +139,10 @@ export default {
 .dragging {
   background-color: yellow;
 }
-.card-container {
-  width: 320px;
-  padding: 10px;
-  margin: 5px;
-  margin-right: 45px;
-  background-color: #f3f3f3;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-}
 .card {
-  margin: 5px;
+  margin: 0.8rem;
   /* border: 1px solid #ccc; */
-  background-color: white;
+  background-color: $theme-dark02;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
   padding: 10px;
   &-container {
@@ -265,17 +150,22 @@ export default {
     padding: 10px;
     margin: 5px;
     margin-right: 45px;
-    background-color: #f3f3f3;
+    background-color: $theme-dark03;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
   }
   &-column-header {
     font-size: 18px;
+    margin-bottom: 2rem;
+    &-text {
+      font-weight: 500;
+    }
   }
   &-drag-handle {
     cursor: move;
     padding: 5px;
   }
   &-ghost {
+    background-color: $theme-dark01;
     transition: transform 0.18s ease;
     transform: rotateZ(5deg)
   }

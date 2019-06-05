@@ -1,5 +1,5 @@
 <template>
-  <RouterView class="app" v-cloak />
+  <RouterView class="app relative min-h-full h-full w-full overflow-hidden bg-theme-dark04 text-primary-base1 antialiased" v-cloak />
 </template>
 
 <script>
@@ -14,7 +14,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app {
-  @apply relative min-h-full h-full w-full overflow-hidden bg-theme-dark04 text-primary-base1 antialiased;
-}
 </style>
